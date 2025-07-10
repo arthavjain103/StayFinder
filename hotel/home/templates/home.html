@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% block start %}
+
+
+<!-- jumbotron and nav -->
+<!-- Internal CSS -->
+<style>
+    body{
+        font-family: 'Poppins', sans-serif;
+     
+      background-color: #f9fafb;;
+    }
+   
+
+    /* Change dropdown menu background to white and text to black */
+    .dropdown-menu {
+        background-color: white !important;
+    }
+
+    .dropdown-item {
+        color: black !important;
+    }
+
+    /* Change hover effect for better visibility */
+    
+    
+
+    /* Navbar toggler icon to black */
+   
+    .filter-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .room-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+    .room-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    .room-info {
+        padding: 1rem;
+    }
+    .amenities-tag {
+        display: inline-block;
+        background: #f3f4f6;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        color: #4b5563;
+    }
+    .price-section {
+        background: #f8f9fa;
+        padding: 1rem;
+        text-align: center;
+        border-left: 1px solid #e5e7eb;
+    }
+    .btn-view-deal {
+        background-color: #10b981;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+    .btn-view-deal:hover {
+        background-color: #059669;
+        transform: translateY(-1px);
+    }
+   
+    
+    .more-offers {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+    .more-offers p {
+        margin-bottom: 0.5rem;
+    }
+    .btn-success {
+        background-color: #10b981;
+        border-color: #10b981;
+    }
+    .btn-success:hover {
+        background-color: #059669;
+        border-color: #059669;
+    }
+</style>
+
+<!-- Banner Section with Navbar -->
+<section class="colorful jumbotron mb-0 d-flex align-items-center justify-content-center"
+    style="background: linear-gradient(135deg, rgba(24, 17, 24, 0.8), rgba(145, 144, 146, 0.8)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'); background-size: cover; background-position: center; min-height: 500px;">
+    <div class="container hotels-container">
+        <div class="row justify-content-center align-items-center" style="min-height: 500px;">
+            <div class="col-md-10 text-white text-center">
+                <h1 class="display-4 fw-bold mb-4" style="color: rgba(255, 255, 255, 0.9); text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.5); font-weight: 700;">
+                    Find Your Best Stay With Us
+                </h1>
+                <p class="lead mb-5" style="color: rgba(255, 255, 255, 0.9); text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.5); font-weight: 700;">
+                    Discover handpicked hotels for your next adventure.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="search-container" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="row mt-2 justify-content-between">
+                    <div class="filter-card">
+                        <h5>Filter</h5>
+                        <form method="get" action="{% url 'home' %}">
+                            <div class="form-group">
+                                <label for="checkin">Check in</label>
+                                <input type="date" name="checkin" id="checkin" class="form-control">
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="checkout">Check out</label>
+                                <input type="date" name="checkout" id="checkout" class="form-control">
+                            </div>
+                            <div class="form-group mt-3">
+                                <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-9 px-4 mb-5">
+                <form method="get" action="{% url 'home' %}">
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="sort_by">Sort by</label>
+                                <select class="form-control" name="sort_by" id="sort_by">
+                                    <option value="">Recommended</option>
+                                    <option {% if sort_by == 'ASC' %}selected{% endif %} value="ASC">Price: Low to High</option>
+                                    <option {% if sort_by == 'DSC' %}selected{% endif %} value="DSC">Price: High to Low</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="search">Search</label>
+                                <input type="text" name="search" class="form-control" value="{{ search }}" placeholder="Search rooms">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="amenities">Amenities</label>
+                                <select name="amenities" class="form-control" id="amenitiesSelect" multiple>
+                                    <option value="">Choose</option>
+                                    {% for amenities_obj in amenities_objs %}
+                                        <option {% if amenities_obj.amenities_name in amenities %}selected{% endif %} value="{{ amenities_obj.amenities_name }}">{{ amenities_obj.amenities_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-success mt-4">Find</button>
+                        </div>
+                    </div>
+                </form>
+
+                {% for hotels_obj in hotels_objs %}
+                <div class="row search-card-result">
+                    <div class="col-md-3">
+                        <a href="{% url 'hotel_detail' hotels_obj.uid %}">
+                            <img class="img-fluid" src="{{ hotels_obj.images.first.image.url }}" alt="Room Image">
+                        </a>
+                    </div>
+                    <div class="col-md-5">
+                        <h5>{{ hotels_obj.hotel_name }}</h5>
+                        <p>{{ hotels_obj.description|truncatechars:150 }}</p>
+                        <p>
+                            {% for amenitie in hotels_obj.amenities.all %}
+                                <span class="badge bg-light text-dark me-1">{{ amenitie.amenities_name }}</span>
+                            {% endfor %}
+                        </p>
+                    </div>
+                    <div class="col-md-2 border-left text-center more-offers">
+                        <p class="mb-1">Starting from</p>
+                        <h5 class="mb-2">${{ hotels_obj.hotel_price }}</h5>
+                        <p class="text-muted">{{ hotels_obj.room_count }} rooms </p>
+                    </div>
+                    <div class="col-md-2 border-left text-center more-offers">
+                        <a href="{% url 'hotel_detail' hotels_obj.uid %}" class="btn btn-success">View deal</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

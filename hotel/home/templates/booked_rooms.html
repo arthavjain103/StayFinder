@@ -1,0 +1,70 @@
+{% extends 'base.html' %} {% block start %}
+
+<style>
+  .booking-table {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+  }
+  .table thead th {
+    border-bottom: 2px solid #dee2e6;
+    background-color: #f8f9fa;
+  }
+  .search-box {
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+    padding: 8px 12px;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  .btn-checkout {
+    background-color: #10b981;
+    border-color: #10b981;
+    color: white;
+  }
+  .btn-checkout:hover {
+    background-color: #059669;
+    border-color: #059669;
+    color: white;
+  }
+</style>
+
+<div class="container mt-5">
+  <h3 class="mb-4">List of Booked Rooms</h3>
+  <form method="get" class="mb-3">
+    <input
+      type="text"
+      name="search"
+      class="search-box"
+      placeholder="Enter room to search"
+      value="{{ request.GET.search|default:'' }}"
+    />
+  </form>
+  <div class="booking-table">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Room</th>
+          <th>Booked By</th>
+          <th>Check In</th>
+          <th>Check Out</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in bookings %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ booking.hotel.hotel_name }}</td>
+          <td>{{ booking.user.username }}</td>
+          <td>{{ booking.start_date }}</td>
+          <td>{{ booking.last_date }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
